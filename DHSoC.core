@@ -1,0 +1,80 @@
+CAPI=2:
+
+name : ::DHSoC:1.0.0
+description: RISC-V 5-Stage Pipelined SoC
+
+filesets:
+  core:
+    files:
+      - vsrc/core/exe/csr_file.v
+      - vsrc/core/exe/exe_mem.v
+      - vsrc/core/exe/exe_type_b_j.v
+      - vsrc/core/exe/exe_type_m.v
+      - vsrc/core/exe/exe_type_r.v
+      - vsrc/core/exe/exe_type_s_l.v
+      - vsrc/core/exe/exe_type_system.v
+      - vsrc/core/exe/exe.v
+      - vsrc/core/id/id_exe.v
+      - vsrc/core/id/id_type_i.v
+      - vsrc/core/id/id_type_r.v
+      - vsrc/core/id/id.v
+      - vsrc/core/id/interrupt_ctrl.v
+      - vsrc/core/id/pipe_ctrl.v
+      - vsrc/core/if/if_id.v
+      - vsrc/core/if/pc_reg.v
+      - vsrc/core/if/rom.v
+      - vsrc/core/mem/mem_wb.v
+      - vsrc/core/mem/mem.v
+      - vsrc/core/mem/ram.v
+      - vsrc/core/mul/div.v
+      - vsrc/core/mul/mul.v
+      - vsrc/core/mul/mult_cell.v
+      - vsrc/core/mul/mult_cell0.v
+      - vsrc/core/wb/regfile.v
+      - vsrc/core/core_top.v
+      - vsrc/device/aligner.v
+      - vsrc/device/bus.v
+      - vsrc/device/clint.v
+      - vsrc/device/console.v
+      - vsrc/device/dpram.v
+      - vsrc/include/defines.v:
+            is_include_file: true
+      - vsrc/soc/test_top.v
+
+    file_type : verilogSource
+  
+  verilator_tb: 
+    files:
+      - tb/testbench.cpp
+    file_type : cppSource
+
+targets:
+
+  default:
+    filesets : [core]
+    toplevel: ["is_toplevel? (test_top.v)"]
+    tools:
+      verilator:
+        verilator_options:
+          - "--trace"
+          - "-Wno-WIDTH -Wno-UNUSED -Wno-CASEINCOMPLETE --Wno-PINMISSING -Wno-SELRANGE -Wno-UNOPTFLAT"
+
+  lint:
+    default_tool : verilator
+    filesets : [core]
+    tools:
+      verilator:
+        mode : lint-only
+        verilator_options:
+          - "-Wno-WIDTH -Wno-UNUSED -Wno-CASEINCOMPLETE --Wno-PINMISSING -Wno-SELRANGE -Wno-UNOPTFLAT"
+    toplevel : test_top
+
+  verilator_tb:
+    default_tool : verilator
+    filesets : [core,  verilator_tb]
+    tools:
+      verilator:
+        verilator_options:
+          - "--trace"
+          - "--Wno-WIDTH -Wno-UNUSED -Wno-CASEINCOMPLETE --Wno-PINMISSING -Wno-SELRANGE -Wno-UNOPTFLAT"
+    toplevel : test_top

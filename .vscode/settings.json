@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "iosfwd": "cpp",
+        "soc_reg.h": "c"
+    }
+}
