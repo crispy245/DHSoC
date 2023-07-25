@@ -36,7 +36,12 @@ vhdl: obj_dir/V${TOP}.mk
 run: test_src/${PROG}.bin obj_dir/V${TOP}.exe 
 	obj_dir/V${TOP} test_src/${PROG}.bin 
 
-
+.PHONY : test
+test: run
+	cd isa && \
+	make && \
+	cd ../ && \
+	python3 test_all_isa.py
 
 .PHONY : wave
 wave: run
@@ -46,3 +51,4 @@ wave: run
 clean:
 	rm -rf obj_dir wave.vcd
 	rm -rf test_src/*.elf test_src/*.bin
+	rm -rf isa/generated/*
